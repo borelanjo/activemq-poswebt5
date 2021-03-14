@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  activemq-service:
+    image: rmohr/activemq
+    networks:
+      - borelanjo-network
+    ports:
+      - 8161:8161
+      - 61616:61616
+
+  eureka-service:
+    image: 'borelanjo/eureka:latest'
+    networks:
+      - borelanjo-network
+    ports:
+      - "8761:8761"
+
+  gateway-service:
+    image: 'borelanjo/gateway-service:latest'
+    networks:
+      - borelanjo-network
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka-service
+    environment:
+      APP_URL: gateway-service
+      EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
+
+  paciente-alfa-producer-service:
+    image: 'borelanjo/paciente-producer-service:latest'
+    networks:
+      - borelanjo-network
+    depends_on:
+      - eureka-service
+    environment:
+      APP_URL: paciente-alfa-producer-service
+      EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
+      ACTIVEMQ_BROKER_URL: 'tcp://activemq-service:61616'
+  paciente-beta-producer-service:
+    image: 'borelanjo/paciente-producer-service:latest'
+    networks:
+      - borelanjo-network
+    depends_on:
+      - eureka-service
+    environment:
+      APP_URL: paciente-beta-producer-service
+      EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
+      ACTIVEMQ_BROKER_URL: 'tcp://activemq-service:61616'
+
+  paciente-alfa-consumer-service:
+    image: 'borelanjo/paciente-consumer-service:latest'
+    networks:
+      - borelanjo-network
+    depends_on:
+      - eureka-service
+    environment:
+      EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
+      ACTIVEMQ_BROKER_URL: 'tcp://activemq-service:61616'
+  paciente-beta-consumer-service:
+    image: 'borelanjo/paciente-consumer-service:latest'
+    networks:
+      - borelanjo-network
+    depends_on:
+      - eureka-service
+    environment:
+      EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
+      ACTIVEMQ_BROKER_URL: 'tcp://activemq-service:61616'
+
+#############################################################
+######################### NETWORK ###########################
+#############################################################
+networks:
+  borelanjo-network:
+    driver: "bridge"
