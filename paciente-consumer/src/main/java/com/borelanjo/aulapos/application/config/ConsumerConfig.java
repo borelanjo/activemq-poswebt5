@@ -29,7 +29,6 @@ public class ConsumerConfig {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory());
         factory.setAutoStartup(true);
-        factory.setPubSubDomain(true);
         return factory;
     }
 
