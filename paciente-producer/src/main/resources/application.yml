@@ -1,16 +1,16 @@
 eureka:
   instance:
-    hostname: ${APP_URL:localhost}
+    hostname: ${APP_URL:192.168.68.117}
   client:
     serviceUrl:
-      defaultZone: ${EUREKA_DEFAULT_ZONE:http://localhost:8761}
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://192.168.68.117:8761}
 server:
-  port: 8082
+  port: 8087
 spring:
   application:
     name: paciente-producer-service
   activemq:
-    broker-url: ${ACTIVEMQ_BROKER_URL:tcp://localhost:61616}
+    broker-url: ${ACTIVEMQ_BROKER_URL:tcp://192.168.68.117:61616}
     pool:
       enabled: ${ACTIVEMQ_POOL_ENABLED:true}
       max-connections: ${ACTIVEMQ_POOL_CONNECTIONS:50}

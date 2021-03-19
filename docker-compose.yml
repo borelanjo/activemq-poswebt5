@@ -1,6 +1,39 @@
 version: '3.8'
 
 services:
+  db-unidade-alfa:
+    container_name: db-unidade-alfa
+    image: postgres:9.6
+    networks:
+      - borelanjo-network
+    restart: always
+    hostname: db-unidade-alfa
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: unidade-alfa
+      POSTGRES_USER: unidade-alfa
+      POSTGRES_PASSWORD: unidade-alfa
+      PGDATA: /tmp
+    volumes:
+      - ./docker/postgres/data-unidade-alfa:/var/lib/postgresql/data
+  db-unidade-beta:
+    container_name: db-unidade-beta
+    image: postgres:9.6
+    networks:
+      - borelanjo-network
+    restart: always
+    hostname: db-unidade-beta
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: unidade-beta
+      POSTGRES_USER: unidade-beta
+      POSTGRES_PASSWORD: unidade-beta
+      PGDATA: /tmp
+    volumes:
+      - ./docker/postgres/data-unidade-beta:/var/lib/postgresql/data
+
   activemq-service:
     image: rmohr/activemq
     networks:
@@ -58,6 +91,9 @@ services:
     environment:
       EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
       ACTIVEMQ_BROKER_URL: 'tcp://activemq-service:61616'
+      DB_UNIDADE_URL: 'jdbc:postgresql://db-unidade-alfa:5432/unidade-alfa?createDatabaseIfNotExist=true'
+      DB_UNIDADE_USERNAME: 'unidade-alfa'
+      DB_UNIDADE_PASSWORD: 'unidade-alfa'
   paciente-beta-consumer-service:
     image: 'borelanjo/paciente-consumer-service:latest'
     networks:
@@ -67,6 +103,9 @@ services:
     environment:
       EUREKA_DEFAULT_ZONE: 'http://eureka-service:8761/eureka'
       ACTIVEMQ_BROKER_URL: 'tcp://activemq-service:61616'
+      DB_UNIDADE_URL: 'jdbc:postgresql://db-unidade-beta:5432/unidade-beta?createDatabaseIfNotExist=true'
+      DB_UNIDADE_USERNAME: 'unidade-beta'
+      DB_UNIDADE_PASSWORD: 'unidade-beta'
 
 #############################################################
 ######################### NETWORK ###########################

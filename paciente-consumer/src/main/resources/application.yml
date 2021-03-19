@@ -14,3 +14,18 @@ spring:
     pool:
       enabled: ${ACTIVEMQ_POOL_ENABLED:true}
       max-connections: ${ACTIVEMQ_POOL_CONNECTIONS:50}
+  # Database
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_UNIDADE_URL:jdbc:postgresql://localhost:5432/paciente-consumer?createDatabaseIfNotExist=true}
+    username: ${DB_UNIDADE_USERNAME:job1}
+    password: ${DB_UNIDADE_PASSWORD:job1}
+  # JPA properties
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: false
